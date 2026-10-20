@@ -35,4 +35,13 @@ def new_customer():
         "phone": "123456789",
         "email": f"student-{unique}@example.com",
         "password": f"Aa1!{uuid.uuid4().hex[:12]}Zq",
+    
     }
+BILLING_ADDRESS = {
+    "country": "KZ",
+    "postal_code": "050001",
+    "house_number": "01",
+    "street": "Abay Avenue",
+    "city": "Almaty",
+    "state": "Almaty",
+}
