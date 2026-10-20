@@ -2,12 +2,14 @@ import re
 
 from playwright.sync_api import Page, expect
 
-from data.user_factory import SECOND_CUSTOMER, unknown_user
+from data.user_factory import unknown_user
 
 
-def test_valid_credentials_open_the_account_page(login_page, page: Page):
+def test_valid_credentials_open_the_account_page(
+    registered_customer, login_page, page: Page
+):
     login_page.open()
-    login_page.sign_in(SECOND_CUSTOMER)
+    login_page.sign_in(registered_customer)
 
     expect(page).to_have_url(re.compile(r"/account"))
 

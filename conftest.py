@@ -1,11 +1,16 @@
-import pytest
+import re
 
+import pytest
+from playwright.sync_api import expect
+
+from data.user_factory import new_customer
 from pages.cart_page import CartPage
 from pages.checkout_page import CheckoutPage
+from pages.comparison_page import ComparisonPage
+from pages.forgot_password_page import ForgotPasswordPage
 from pages.login_page import LoginPage
 from pages.product_page import ProductPage
 from pages.register_page import RegisterPage
-from pages.comparison_page import ComparisonPage
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -38,7 +43,21 @@ def checkout_page(page):
     return CheckoutPage(page)
 
 
-
 @pytest.fixture
 def comparison_page(page):
     return ComparisonPage(page)
+
+
+@pytest.fixture
+def forgot_password_page(page):
+    return ForgotPasswordPage(page)
+
+
+@pytest.fixture
+def registered_customer(page, register_page):
+    """Создаёт нового пользователя для одного теста и отдаёт его данные."""
+    user = new_customer()
+    register_page.open()
+    register_page.register(user)
+    expect(page).to_have_url(re.compile(r"/auth/login"))
+    return user

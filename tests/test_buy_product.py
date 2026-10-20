@@ -1,10 +1,10 @@
 from playwright.sync_api import expect
 
-from data.user_factory import BILLING_ADDRESS, SECOND_CUSTOMER
+from data.user_factory import BILLING_ADDRESS
 
 
 def test_buy_a_product_with_cash_on_delivery(
-    product_page, cart_page, login_page, checkout_page
+    registered_customer, product_page, cart_page, login_page, checkout_page
 ):
     product_page.open_home()
     product_page.open_first_product()
@@ -18,7 +18,7 @@ def test_buy_a_product_with_cash_on_delivery(
     expect(cart_page.quantity).to_have_value("1")
 
     cart_page.proceed_to_checkout()
-    login_page.sign_in(SECOND_CUSTOMER)
+    login_page.sign_in(registered_customer)
     checkout_page.continue_after_sign_in()
     checkout_page.fill_billing_address(BILLING_ADDRESS)
     checkout_page.pay_cash_on_delivery()
