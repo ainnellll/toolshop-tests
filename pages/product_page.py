@@ -28,3 +28,14 @@ class ProductPage:
 
     def open_cart(self):
         self.cart_icon.click()
+    def card_name(self, index: int) -> str:
+        return self.cards.nth(index).get_by_test_id("product-name").inner_text().strip()
+
+    def card_price(self, index: int) -> str:
+        return self.cards.nth(index).get_by_test_id("product-price").inner_text().strip()
+
+    def add_to_compare(self, index: int):
+        self.cards.nth(index).get_by_test_id("compare-btn").click()
+
+    def open_comparison(self):
+        self.page.get_by_test_id("compare-link").click()

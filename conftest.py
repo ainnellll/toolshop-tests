@@ -5,6 +5,7 @@ from pages.checkout_page import CheckoutPage
 from pages.login_page import LoginPage
 from pages.product_page import ProductPage
 from pages.register_page import RegisterPage
+from pages.comparison_page import ComparisonPage
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -35,3 +36,9 @@ def cart_page(page):
 @pytest.fixture
 def checkout_page(page):
     return CheckoutPage(page)
+
+
+
+@pytest.fixture
+def comparison_page(page):
+    return ComparisonPage(page)
