@@ -31,7 +31,9 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Install Playwright browsers
-            - name: Start Toolshop app in Docker
+        run: playwright install --with-deps chromium
+
+      - name: Start Toolshop app in Docker
         run: |
           git clone --depth 1 https://github.com/testsmith-io/practice-software-testing.git toolshop-app
           cd toolshop-app
@@ -42,9 +44,8 @@ jobs:
             sleep 10
           done
           until curl -s -o /dev/null http://localhost:4200; do sleep 5; done
-        run: playwright install --with-deps chromium
 
-            - name: Run Playwright tests
+      - name: Run Playwright tests
         run: pytest -c pytest-ci.ini --base-url http://localhost:4200 --splits ${{ matrix.splits }} --group ${{ matrix.group }}
 
       - name: Upload HTML report and JUnit
