@@ -31,10 +31,21 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Install Playwright browsers
+            - name: Start Toolshop app in Docker
+        run: |
+          git clone --depth 1 https://github.com/testsmith-io/practice-software-testing.git toolshop-app
+          cd toolshop-app
+          docker compose -f docker-compose.yml up -d
+          until curl -s -o /dev/null http://localhost:8091; do sleep 5; done
+          for i in 1 2 3 4 5 6; do
+            docker compose -f docker-compose.yml exec -T laravel-api php artisan migrate:fresh --seed && break
+            sleep 10
+          done
+          until curl -s -o /dev/null http://localhost:4200; do sleep 5; done
         run: playwright install --with-deps chromium
 
-      - name: Run Playwright tests
-        run: pytest -c pytest-ci.ini --splits ${{ matrix.splits }} --group ${{ matrix.group }}
+            - name: Run Playwright tests
+        run: pytest -c pytest-ci.ini --base-url http://localhost:4200 --splits ${{ matrix.splits }} --group ${{ matrix.group }}
 
       - name: Upload HTML report and JUnit
         if: ${{ !cancelled() }}
