@@ -51,8 +51,13 @@ jobs:
           docker compose -f docker-compose.yml exec -T laravel-api php artisan migrate:refresh --seed
           curl -fsS http://localhost:8091/status
           echo "--- PRODUCTS CHECK ---"
-          curl -sS -w "\nHTTP %{http_code}\n" "http://localhost:8091/products?page=0" | head -c 1200 || true
-          docker compose -f docker-compose.yml exec -T laravel-api sh -c "tail -n 40 storage/logs/laravel.log 2>/dev/null || echo no-laravel-log" || true
+          for p in brands categories "products?page=1" "products?page=0" "products?between=price,1,100&page=1"; do
+            echo "GET /$p -> $(curl -s -o /dev/null -w '%{http_code}' "http://localhost:8091/$p")"
+          done
+          curl -sS -i "http://localhost:8091/products?page=1" | head -c 1500 || true
+          echo
+          docker compose -f docker-compose.yml logs --tail 40 web laravel-api || true
+          docker compose -f docker-compose.yml exec -T laravel-api sh -c "id; ls -la storage storage/logs storage/framework 2>&1 | head -40" || true
           echo "--- END PRODUCTS CHECK ---"
           for i in $(seq 1 60); do
             if curl -s -o /dev/null -w "%{http_code}" http://localhost:4200 | grep -q "200"; then
