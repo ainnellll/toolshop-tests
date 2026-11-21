@@ -35,13 +35,14 @@ jobs:
 
       - name: Start Toolshop app in Docker
         env:
-          DISABLE_LOGGING: "false"
+          DISABLE_LOGGING: "true"
         run: |
           git clone --depth 1 https://github.com/testsmith-io/practice-software-testing.git toolshop-app
           cd toolshop-app
           docker compose -f docker-compose.yml up -d --force-recreate
           sleep 30
           docker compose -f docker-compose.yml exec -T -u root laravel-api composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-ffi
+          docker compose -f docker-compose.yml exec -T -u root laravel-api sh -c "mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache && chmod -R 777 storage bootstrap/cache"
           for i in $(seq 1 30); do
             if docker compose -f docker-compose.yml exec -T mariadb mysqladmin ping -h localhost -u root -proot --silent 2>/dev/null; then
               echo "MariaDB is ready"; break
