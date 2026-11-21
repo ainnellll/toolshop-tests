@@ -1,3 +1,4 @@
+import os
 import re
 
 import pytest
@@ -61,3 +62,15 @@ def registered_customer(page, register_page):
     register_page.register(user)
     expect(page).to_have_url(re.compile(r"/auth/login"))
     return user
+
+
+
+def pytest_collection_modifyitems(config, items):
+    """Аналог forbidOnly: в CI тест с маркером @pytest.mark.only роняет запуск."""
+    if not os.environ.get("CI"):
+        return
+    focused = [item.nodeid for item in items if item.get_closest_marker("only")]
+    if focused:
+        raise pytest.UsageError(
+            "forbidOnly: в CI запрещены тесты с маркером 'only':\n  " + "\n  ".join(focused)
+        )
