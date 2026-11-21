@@ -40,6 +40,19 @@ pytest
 
 `forbidOnly`, `--shard` and the `blob` reporter belong to the JavaScript Playwright Test runner; the Python plugin does not have them, so the equivalents above are used.
 
+### Evidence
+
+**npm/pip cache restored on the second run:**
+
+![Cache restored](screenshots/ci-cache-restored.png)
+
+**4 shards in parallel + Merge reports job:**
+
+![Run graph](screenshots/ci-run-graph.png)
+
+**Artefacts of a run:**
+
+![Artefacts](screenshots/ci-artifacts.png)
 ### Runtime
 
 | Configuration | Total run time | Run tests step (slowest shard) | Run |
